@@ -1,0 +1,46 @@
+{% extends "../view/module-entry.html" %}
+{% block header %}
+<html>
+	<header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+	<div class="container">
+		<div class="navbar-header">
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-8">
+			</div>
+			<a href="#" class="navbar-brand">文件管理</a>
+		</div>
+		<nav id="bs-navbar" class="collapse navbar-collapse">
+		<ul class="nav navbar-nav">
+			<li>
+			<a href="/file">查看文件</a>
+			</li>
+		</ul>
+	</div>
+	<div class="container bs-docs-container">
+
+		<div class="row">
+			<div class="col-md-9" role="main">
+				<div class="bs-docs-section">
+					<div class="bs-docs-header" id="content" tabindex="-1">
+						<div class="container">
+							<h1>Upload File</h1>
+							<p>上传文件，同步CDN</p>
+						</div>
+					</div>
+					<body>
+						<div class="col-md-9" role="main">
+							<div class="bs-callout bs-callout-info" id="callout-helper-context-color-specificity">
+								<form action='uploadfile' enctype="multipart/form-data" method='post'>
+									{% raw xsrf_form_html() %}
+									<input type='file' name='file'/>	
+									<input type='submit' value='提交'/>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+{%end%}

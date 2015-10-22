@@ -1,0 +1,62 @@
+[I 151022 04:48:51 web:1908] 304 GET /file (172.19.10.150) 11.62ms
+[I 151022 04:48:53 web:1908] 200 GET /uploadfile (172.19.10.150) 5.98ms
+[E 151022 04:48:58 web:1496] Uncaught exception POST /uploadfile (172.19.10.150)
+    HTTPServerRequest(protocol='http', host='172.19.10.161:8080', method='POST', uri='/uploadfile', version='HTTP/1.1', remote_ip='172.19.10.150', headers={'Origin': 'http://172.19.10.161:8080', 'Content-Length': '2247', 'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6', 'Accept-Encoding': 'gzip, deflate', 'Host': '172.19.10.161:8080', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Upgrade-Insecure-Requests': '1', 'Connection': 'keep-alive', 'Referer': 'http://172.19.10.161:8080/uploadfile', 'Cache-Control': 'max-age=0', 'Cookie': 'user="2|1:0|10:1445230632|4:user|20:MTcyLjE5LjEwLjE1MA==|dda18721e8f355338a5bf1165ca4a39d59961e1e55c24ce7aeaeec0e3dc3508c"; _xsrf=2|e94ba052|8fa94f38b19c99f832d57078ef5efbfc|1445231160', 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36', 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary0BLlCtROFo9sdm3c'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "./controller/handlers.py", line 86, in post
+        redis_client.sadd("file_author:%s"%get_current_user(),"file:%s"%filename)
+    NameError: global name 'get_current_user' is not defined
+[E 151022 04:48:58 web:1908] 500 POST /uploadfile (172.19.10.150) 5.13ms
+[I 151022 04:49:09 autoreload:204] ./controller/handlers.py modified; restarting server
+[E 151022 04:49:12 web:1496] Uncaught exception POST /uploadfile (172.19.10.150)
+    HTTPServerRequest(protocol='http', host='172.19.10.161:8080', method='POST', uri='/uploadfile', version='HTTP/1.1', remote_ip='172.19.10.150', headers={'Origin': 'http://172.19.10.161:8080', 'Content-Length': '2247', 'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6', 'Accept-Encoding': 'gzip, deflate', 'Host': '172.19.10.161:8080', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Upgrade-Insecure-Requests': '1', 'Connection': 'keep-alive', 'Referer': 'http://172.19.10.161:8080/uploadfile', 'Cache-Control': 'max-age=0', 'Cookie': 'user="2|1:0|10:1445230632|4:user|20:MTcyLjE5LjEwLjE1MA==|dda18721e8f355338a5bf1165ca4a39d59961e1e55c24ce7aeaeec0e3dc3508c"; _xsrf=2|e94ba052|8fa94f38b19c99f832d57078ef5efbfc|1445231160', 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36', 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryoTuXGZoicPNe2BBl'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "./controller/handlers.py", line 86, in post
+        redis_client.sadd("file_author:%s"%self.get_current_user(),"file:%s"%filename)
+      File "/usr/local/lib/python2.7/dist-packages/redis/client.py", line 1477, in sadd
+        return self.execute_command('SADD', name, *values)
+      File "/usr/local/lib/python2.7/dist-packages/redis/client.py", line 564, in execute_command
+        connection.send_command(*args)
+      File "/usr/local/lib/python2.7/dist-packages/redis/connection.py", line 556, in send_command
+        self.send_packed_command(self.pack_command(*args))
+      File "/usr/local/lib/python2.7/dist-packages/redis/connection.py", line 532, in send_packed_command
+        self.connect()
+      File "/usr/local/lib/python2.7/dist-packages/redis/connection.py", line 440, in connect
+        self.on_connect()
+      File "/usr/local/lib/python2.7/dist-packages/redis/connection.py", line 508, in on_connect
+        if nativestr(self.read_response()) != 'OK':
+      File "/usr/local/lib/python2.7/dist-packages/redis/connection.py", line 574, in read_response
+        raise response
+    ResponseError: invalid password
+[E 151022 04:49:12 web:1908] 500 POST /uploadfile (172.19.10.150) 9.72ms
+[I 151022 04:52:35 autoreload:204] ./controller/handlers.py modified; restarting server
+[E 151022 04:52:44 web:1496] Uncaught exception POST /uploadfile (172.19.10.150)
+    HTTPServerRequest(protocol='http', host='172.19.10.161:8080', method='POST', uri='/uploadfile', version='HTTP/1.1', remote_ip='172.19.10.150', headers={'Origin': 'http://172.19.10.161:8080', 'Content-Length': '2247', 'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6', 'Accept-Encoding': 'gzip, deflate', 'Host': '172.19.10.161:8080', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Upgrade-Insecure-Requests': '1', 'Connection': 'keep-alive', 'Referer': 'http://172.19.10.161:8080/uploadfile', 'Cache-Control': 'max-age=0', 'Cookie': 'user="2|1:0|10:1445230632|4:user|20:MTcyLjE5LjEwLjE1MA==|dda18721e8f355338a5bf1165ca4a39d59961e1e55c24ce7aeaeec0e3dc3508c"; _xsrf=2|e94ba052|8fa94f38b19c99f832d57078ef5efbfc|1445231160', 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36', 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryfUoU1JXk5tXUPR69'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "./controller/handlers.py", line 87, in post
+        redis_client.hset("file:%s"%filename,"upload_date:%s"%time.mktime(time.localtime()))
+    TypeError: hset() takes exactly 4 arguments (3 given)
+[E 151022 04:52:44 web:1908] 500 POST /uploadfile (172.19.10.150) 9.04ms
+[I 151022 04:53:36 autoreload:204] ./controller/handlers.py modified; restarting server
+[E 151022 04:53:38 web:1496] Uncaught exception POST /uploadfile (172.19.10.150)
+    HTTPServerRequest(protocol='http', host='172.19.10.161:8080', method='POST', uri='/uploadfile', version='HTTP/1.1', remote_ip='172.19.10.150', headers={'Origin': 'http://172.19.10.161:8080', 'Content-Length': '2247', 'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6', 'Accept-Encoding': 'gzip, deflate', 'Host': '172.19.10.161:8080', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Upgrade-Insecure-Requests': '1', 'Connection': 'keep-alive', 'Referer': 'http://172.19.10.161:8080/uploadfile', 'Cache-Control': 'max-age=0', 'Cookie': 'user="2|1:0|10:1445230632|4:user|20:MTcyLjE5LjEwLjE1MA==|dda18721e8f355338a5bf1165ca4a39d59961e1e55c24ce7aeaeec0e3dc3508c"; _xsrf=2|e94ba052|8fa94f38b19c99f832d57078ef5efbfc|1445231160', 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36', 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryUozpqkBIw0mdIKQh'})
+    Traceback (most recent call last):
+      File "/usr/local/lib/python2.7/dist-packages/tornado/web.py", line 1413, in _execute
+        result = method(*self.path_args, **self.path_kwargs)
+      File "./controller/handlers.py", line 88, in post
+        redis_client.hset("file:%s"%filename,"md5:%s"%md5_str)
+    TypeError: hset() takes exactly 4 arguments (3 given)
+[E 151022 04:53:38 web:1908] 500 POST /uploadfile (172.19.10.150) 8.69ms
+[I 151022 04:53:50 autoreload:204] ./controller/handlers.py modified; restarting server
+[I 151022 04:53:52 web:1908] 200 POST /uploadfile (172.19.10.150) 6.01ms
+[I 151022 04:53:55 web:1908] 200 GET /uploadfile (172.19.10.150) 7.41ms
+[I 151022 04:53:58 web:1908] 200 GET /file (172.19.10.150) 5.02ms
+[I 151022 04:56:00 autoreload:204] ./controller/handlers.py modified; restarting server
+[I 151022 04:56:07 autoreload:204] ./controller/handlers.py modified; restarting server
+[I 151022 05:13:46 autoreload:204] ./controller/handlers.py modified; restarting server
