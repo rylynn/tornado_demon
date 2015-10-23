@@ -8,18 +8,22 @@ import md5
 import tornado.gen
 import redis
 import time
-
+from chathandle import *
 sys.path.append('../')
-os.path.join(os.path.dirname(__file__),'../view')
 
 redis_client = redis.StrictRedis("127.0.0.1",6379,0,"xujun123",2000)
 
-def GetFile(dir):
+def GetFile(dir, current_user):
 	list_dirs = os.walk(dir) 
 	file_list = []
 	for root,path,files in list_dirs: 
 		for f in files: 
-			file_list.append({"name":unicode(f,'utf8'),"size":"%s kb" % os.stat("files/%s"%f).st_size})
+			file_info =  redis_client.hgetall("file:%s"%f)
+			md5_str = file_info["md5:"]
+			update_time = file_info["upload_date:"]
+			author_str = file_info["author:"]
+			can_delete = (current_user == author_str)
+			file_list.append({"name":unicode(f,'utf8'),"size":"%skb" % os.stat("files/%s"%f).st_size, "update_time":update_time, "md5":md5_str,"author":author_str,"can_delete":can_delete})
 	return file_list
 
 def FileExist(file):
@@ -46,24 +50,8 @@ class BaseClass(tornado.web.RequestHandler):
 		self.set_secure_cookie("user",key)
 
 class IndexHandler(BaseClass):
-	@tornado.web.asynchronous
 	def get(self):
-		cookie = self.get_current_user()
-		if cookie:
-			f = open("test.html",'r+')
-			f2 = open("tempfile.txt","a+")
-			content = f.readline()
-			greeting = self.get_argument('t')
-			f2.write("%s\r\n"%(greeting))
-			f.close()
-			f2.close()
-			self.write(greeting + '%s,user:%s, ip:%s'%(content, cookie, self.request.remote_ip))
-			self.finish()
-		else:
-			self.write("please login")
-			self.set_my_cookie(str(self.request.remote_ip))
-			self.finish()
-
+		self.render("../view/chat_page.html", messages=ChatSocketHandler.cache)
 class UpdateFileHandler(BaseClass):
 	def get(self):
 		if not self.get_current_user():
@@ -83,10 +71,11 @@ class UpdateFileHandler(BaseClass):
 			with open(filepath,'wb') as up:
 				up.write(meta['body'])
 			md5_str =  MakeMd5(meta['body'])
-			redis_client.sadd("file_author:%s"%self.get_current_user(),"file:%s"%filename)
 			redis_client.hset("file:%s"%filename,"upload_date:","%s"%time.mktime(time.localtime()))
 			redis_client.hset("file:%s"%filename,"md5:","%s"%md5_str)
+			redis_client.hset("file:%s"%filename,"author:","%s"%self.get_current_user())
 			self.write("filename:%s finish uploade md5:%s"%(filename, md5_str))
+			self.redirect("/file",permanent=True)
 
 class GetFileListHandler(BaseClass):
 	def get(self):
@@ -94,7 +83,7 @@ class GetFileListHandler(BaseClass):
 			self.write("please_login")
 			self.set_my_cookie(str(self.request.remote_ip))
 		else:
-			files = GetFile("files")
+			files = GetFile("files", self.get_current_user())
 			self.render("../view/filelist.html", file_list = files)
 
 class DeleteFileHandler(BaseClass):
@@ -105,6 +94,22 @@ class DeleteFileHandler(BaseClass):
 		else:
 			filename = self.get_argument("id")
 			if FileExist(filename):
-				os.remove("files/%s"%filename)
-				files = GetFile("files")
-				self.render("../view/filelist.html", file_list = files)
+				author = redis_client.hget("file:%s"%filename,"author:")
+				if author and author == self.get_current_user():
+					os.remove("files/%s"%filename)
+				self.redirect("/file",permanent=True)
+
+class DownLoadFileHandler(BaseClass):
+	def get(self):
+		file_name = self.get_argument("file_name")
+		if FileExist(file_name):
+			download_path=os.path.join(os.path.dirname(__file__),'../files',file_name)
+			self.set_header ('Content-Type', 'application/octet-stream')
+			self.set_header ('Content-Disposition', 'attachment; filename='+file_name)
+			with open(download_path,'rb+') as f:
+				while True:
+					data = f.read(4096)
+					if not data:
+						break
+					self.write(data)
+			self.finish()

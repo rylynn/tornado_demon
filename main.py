@@ -8,7 +8,7 @@ import tornado.web
 import sys
 sys.path.append('./controller')
 from handlers import *
-
+from chathandle import *
 os.path.join(os.path.dirname(__file__),'controller')
 os.path.join(os.path.dirname(__file__),'view')
 
@@ -22,7 +22,7 @@ settings = { "cookie_secret":"yy_hash_md5",
 
 if __name__ == "__main__":
 	tornado.options.parse_command_line()
-	app = tornado.web.Application(handlers=[(r"/", IndexHandler),(r"/uploadfile", UpdateFileHandler),(r"/file",GetFileListHandler),(r"/delete",DeleteFileHandler)],**settings)
+	app = tornado.web.Application(handlers=[(r"/chat", IndexHandler),(r"/uploadfile", UpdateFileHandler),(r"/file",GetFileListHandler),(r"/delete",DeleteFileHandler),(r"/download",DownLoadFileHandler), (r"/websocket", ChatSocketHandler)],**settings)
 	http_server = tornado.httpserver.HTTPServer(app)
 	http_server.listen(8080)
 	tornado.ioloop.IOLoop.instance().start()

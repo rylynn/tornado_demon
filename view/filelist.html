@@ -1,10 +1,25 @@
 {% extends "../view/module-entry.html" %}
 {% block header %}
-<center>filelist</center>
-<ul>
-	{%for f in file_list%}
-	<li>{{f["name"]}} size:{{f["size"]}}   <a href="/delete?id={{f["name"]}}">delete</a> </li>
-	{%end%}
-</ul>
+<header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+<div class="container">
+	<div class="navbar-header">
+
+		<div class="jumbotron">
+			<h1>文件管理</h1>
+			<p>simple project. user terminal file-manage</p>
+		</div>
+
+		<nav id="bs-navbar" class="collapse navbar-collapse">
+		</nav>
+		<ul class = "list-group">
+			{%for f in file_list%}
+			<li class="list-group-item"><a href="/download?file_name={{f["name"]}}">{{f["name"]}}</a> (upload_ip:{{f["author"]}} size:{{f["size"]}} md5:{{f["md5"]}} ) 
+			{% if f["can_delete"] == True%}
+			<a href="/delete?id={{f["name"]}}">delete</a> </li>
+			{%end%}
+			{%end%}
+		</ul>
 		<a class="btn btn-default" href="/uploadfile" role="button">上传文件</a>
+	</div>
+</div>
 {%end%}

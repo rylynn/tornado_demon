@@ -1,0 +1,132 @@
+package protocol.strangertalk.guessgame;
+
+enum RespCode {
+	RESP_OK = 0;
+	RESP_SYS_ERROR = 1;
+	RESP_PERMISSION_DENY = 2;
+	RESP_GAME_NOT_BEGIN = 3;
+	RESP_NOT_ENOUGH_PEOPLE = 4;
+}
+
+enum PacketType { 
+	PACKET_STATRT_GAME_REQ = 100; //开始游戏请求
+	PACKET_NEXT_STEP_REQ = 101; //正确或者跳过请求
+	PACKET_END_GAME_REQ = 102; //游戏结束请求
+	PACKET_GET_GAME_STATUS_REQ = 103; //获取游戏状态
+	PACKET_EXIT_GAME_REQ = 104; //结束游戏请求
+	PACKET_RESTART_GAME_REQ = 105; //重新开始有欧系
+	
+	PACKET_START_GAME_RESP = 200;
+	PACKET_NEXT_STEP_RESP = 201;
+	PACKET_END_GAME_RESP = 202;
+	PACKET_GET_GAME_STATUS_RESP = 203;
+	PACKET_EXIT_GAME_RESP = 204;
+	PACKET_RESTART_GAME_RESP = 205;
+
+	PACKET_GAME_STATUS_BC = 300; //游戏当前状态广播，当前词语，开始时间，竞猜的玩家uid
+}
+
+message PassthroughMessage
+{
+	optional bytes value = 1;
+	optional bytes signature = 2;
+}
+
+message GuessGameMsg {
+	required uint32 uri = 1;
+	required uint32 version = 2;
+	required uint32	seq = 3;	//客户端控制（时间戳或者递增序列）
+	optional PassthroughMessage pass_through_message = 4; //@add pass through to roomserver;
+
+	optional StartGameReq start_game_req = 10;
+	optional StartGameResp start_game_resp = 11;
+
+	optional NextStepReq next_step_req = 14;
+	optional NextStepResp next_step_resp = 15;
+
+	optional EndGameReq end_game_req = 16;
+	optional EndGameResp end_game_resp = 17;
+
+	optional GetGameStatusReq get_game_status_req = 18;
+	optional GetGameStatusResp get_game_status_resp = 19;
+
+	optional ExitGameReq exit_game_req = 20;
+	optional ExitGameResp exit_game_resp = 21;
+
+	optional RestartGameReq restart_game_req = 22;
+	optional RestartGameResp restart_game_resp = 23;
+
+	optional GameStatusBC game_status_bc = 30;
+}
+
+message StartGameReq {
+	required uint32 player_uid = 2;
+}
+
+message StartGameResp {
+	required RespCode resp_code = 1;
+}
+
+enum OperatorType {
+	CORRECT = 0;
+	SKIP = 1;
+}
+
+message NextStepReq {
+	required OperatorType operator_type = 1;
+}
+
+message NextStepResp {
+	required RespCode resp_code = 1;
+	required string word = 2; //确保主持人能收到词语，这个字段有待考虑。
+}
+
+message EndGameReq {
+}
+
+message EndGameResp {
+	required RespCode resp_code = 1;
+}
+
+enum GameStatus {
+	GAME_NOT_START = 0;
+	START_SELECT_PLAYER = 1;
+	GAME_PLAYING = 2;
+	END_GAME = 3;
+	EXIT_GAME = 4;
+}
+
+message ExitGameReq {
+}
+
+message ExitGameResp {
+	required RespCode resp_code = 1;
+}
+
+message RestartGameReq {
+}
+
+message RestartGameResp {
+	required RespCode resp_code = 1;
+}
+
+message GameSnapShot {
+	required GameStatus game_status = 1; //如果这个字段是false，其他值都是空，或者0
+	optional uint32 player_uid = 2; //玩家Id，该id的用户不展示
+	optional bytes word = 3; //竞猜词语
+	optional uint32 start_time = 4; //用于客户端判断结束时间
+	optional uint32 total_correct_count = 5; //玩家最终对的个数 
+	optional uint32 system_current_time = 6;
+}
+
+message GetGameStatusReq {
+}
+
+message GetGameStatusResp {
+	required RespCode resp_code = 1;
+	required GameSnapShot game_status = 2;
+}
+
+message GameStatusBC {
+	required GameSnapShot game_status = 1;
+}
