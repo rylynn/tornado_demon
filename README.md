@@ -1,1 +1,1 @@
-autho: rylynnxj
+author: rylynnxj
